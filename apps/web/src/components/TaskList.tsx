@@ -74,7 +74,6 @@ export default function TaskList() {
 
   return (
     <div className="space-y-4">
-      {/* Фильтры и поиск */}
       <div className="flex gap-2 mb-2">
         <input
           type="text"
@@ -105,8 +104,6 @@ export default function TaskList() {
           <option value="3">Low</option>
         </select>
       </div>
-
-      {/* Список задач */}
       <ul className="space-y-3">
         {filteredTasks.map((task) => (
           <li
