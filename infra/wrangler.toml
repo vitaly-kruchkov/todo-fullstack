@@ -1,0 +1,12 @@
+name = "todo-fullstack"
+main = "../apps/api/src/index.ts"
+compatibility_date = "2025-11-12"
+
+[[d1_databases]]
+binding = "DB"                       
+database_name = "todo_db"     
+database_id = "d9078cd4-2fdd-42f9-8477-6c776d3de084"
+
+[dev]
+port = 8787
+local_protocol = "http"
