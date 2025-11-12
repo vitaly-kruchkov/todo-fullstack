@@ -19,10 +19,12 @@
     "deploy": "npm run deploy:web && npm run deploy:api",
     "deploy:web": "cd apps/web && npm run deploy",
     "deploy:api": "cd infra && wrangler publish",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test:api": "cd apps/api && vitest run",
+    "test:web": "cd apps/web && vitest run",
+    "test": "npm run test:api && npm run test:web"
   },
   "devDependencies": {
+    "@cloudflare/vitest-pool-workers": "^0.10.6",
     "@cloudflare/workers-types": "^4.20251111.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.0",
