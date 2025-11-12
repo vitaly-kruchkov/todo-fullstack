@@ -49,29 +49,6 @@ export default function TaskList() {
       t.title?.toLowerCase().includes(searchText.toLowerCase() ?? "")
     );
 
-  const priorityBadge = (priority?: number) => {
-    if (!priority) return null;
-    const config = [
-      { value: 1, label: "High", bg: "bg-red-100", text: "text-red-800" },
-      {
-        value: 2,
-        label: "Medium",
-        bg: "bg-yellow-100",
-        text: "text-yellow-800",
-      },
-      { value: 3, label: "Low", bg: "bg-green-100", text: "text-green-800" },
-    ].find((p) => p.value === priority);
-
-    if (!config) return null;
-
-    return (
-      <span
-        className={`ml-2 px-2 py-0.5 rounded-full text-xs font-semibold ${config.bg} ${config.text}`}>
-        {config.label}
-      </span>
-    );
-  };
-
   return (
     <div className="space-y-4">
       <div className="flex gap-2 mb-2">
@@ -108,7 +85,7 @@ export default function TaskList() {
         {filteredTasks.map((task) => (
           <li
             key={task.id}
-            className="p-4 border rounded-lg flex justify-between items-start bg-white shadow-sm hover:shadow-md transition-shadow duration-150">
+            className="p-3 border rounded flex flex-col sm:flex-row justify-between items-start bg-white w-full sm:w-auto">
             <div className="flex flex-col gap-2 w-full">
               {editTaskId === task.id ? (
                 <>
@@ -163,19 +140,36 @@ export default function TaskList() {
                   <div className="flex items-center gap-2 flex-wrap">
                     <input
                       type="checkbox"
+                      id={`task-${task.id}`}
                       checked={task.status === "done"}
                       onChange={() => toggleStatus(task.id, task.status)}
-                      className="h-5 w-5 accent-blue-500"
+                      tabIndex={0}
                     />
-                    <span
-                      className={`font-medium ${
+                    <label
+                      htmlFor={`task-${task.id}`}
+                      className={
                         task.status === "done"
                           ? "line-through text-gray-400"
                           : ""
-                      }`}>
-                      {task.title}
-                    </span>
-                    {priorityBadge(task.priority)}
+                      }>
+                      {task.title}{" "}
+                    </label>
+                    {task.priority && (
+                      <span
+                        className={`px-1 py-0.5 rounded text-xs font-semibold ${
+                          task.priority === 1
+                            ? "bg-red-200 text-red-800"
+                            : task.priority === 2
+                            ? "bg-yellow-200 text-yellow-800"
+                            : "bg-green-200 text-green-800"
+                        }`}>
+                        {task.priority === 1
+                          ? "High"
+                          : task.priority === 2
+                          ? "Medium"
+                          : "Low"}
+                      </span>
+                    )}
                   </div>
                   {task.enhancedDescription && (
                     <pre className="text-sm text-gray-700 mt-1 p-2 bg-gray-50 rounded">
