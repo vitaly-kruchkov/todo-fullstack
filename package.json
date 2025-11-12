@@ -1,0 +1,38 @@
+{
+  "name": "todo-fullstack",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm:dev:web\" \"npm:dev:api\"",
+    "dev:web": "cd apps/web && npm run dev",
+    "dev:api": "npm run db:migrate:local && wrangler dev --cwd ./infra",
+    "db:migrate:local": "wrangler d1 execute DB --file=migrations.sql --cwd ./infra",
+    "db:migrate:remote": "wrangler d1 execute DB --remote --file=migrations.sql --cwd ./infra",
+    "api:start": "wrangler dev --cwd ./infra",
+    "build": "npm run build:web && npm run build:api",
+    "build:web": "cd apps/web && npm run build",
+    "build:api": "cd infra && wrangler build",
+    "deploy": "npm run deploy:web && npm run deploy:api",
+    "deploy:web": "cd apps/web && npm run deploy",
+    "deploy:api": "cd infra && wrangler publish"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20251111.0",
+    "concurrently": "^8.2.0",
+    "typescript": "^5.9.3",
+    "zod": "^3.25.76"
+  },
+  "dependencies": {
+    "cross-fetch": "^3.1.6",
+    "hono": "^3.12.12",
+    "openai": "^6.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "vite": "^5.1.0",
+    "vite-tsconfig-paths": "^5.1.4",
+    "zustand": "^5.0.8"
+  }
+}

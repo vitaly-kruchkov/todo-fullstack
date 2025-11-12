@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "lib": ["ES2022", "WebWorker"],
+    "moduleResolution": "Node",
+    "strict": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "baseUrl": ".",
+    "paths": {
+      "@helper/*": ["../../packages/types/*"],
+      "@utils/*": ["../../packages/utils/*"]
+    }
+  },
+  "include": ["src", "../../packages/types", "../../packages/utils"]
+}
