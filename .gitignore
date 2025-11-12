@@ -16,7 +16,7 @@ build/
 .netlify/
 functions/
 
-
+.dev.vars
 .env
 .env.local
 .env.*.local
