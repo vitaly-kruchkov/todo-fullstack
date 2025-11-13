@@ -3,25 +3,23 @@ import { useMemo } from "react";
 export function DescriptionTask({ description }: { description?: string }) {
   const parsed = useMemo(() => {
     if (!description) return null;
+
     try {
-      const cleaned = description
-        .replace(/^```json/, "")
-        .replace(/```$/, "")
-        .trim();
-      return JSON.parse(cleaned);
+      return typeof description === "string"
+        ? JSON.parse(description)
+        : description;
     } catch {
       return null;
     }
   }, [description]);
 
-  if (!description) return null;
-
-  if (!parsed)
+  if (!parsed) {
     return (
       <pre className="text-sm text-gray-700 mt-1 p-2 bg-gray-50 rounded break-words whitespace-pre-wrap">
         {description}
       </pre>
     );
+  }
 
   return (
     <div className="p-2 mt-2 bg-gray-50 rounded text-sm space-y-2">
@@ -48,9 +46,11 @@ export function DescriptionTask({ description }: { description?: string }) {
           </ul>
         </>
       )}
-      <p>
-        <strong>Estimate Hours:</strong> {parsed.estimateHours}
-      </p>
+      {parsed.estimateHours && (
+        <p>
+          <strong>Estimate Hours:</strong> {parsed.estimateHours}
+        </p>
+      )}
       {parsed.tags?.length > 0 && (
         <p>
           <strong>Tags:</strong> {parsed.tags.join(", ")}

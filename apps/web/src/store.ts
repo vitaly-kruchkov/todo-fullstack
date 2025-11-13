@@ -47,7 +47,9 @@ export const useTaskStore = create<TaskState>((set) => ({
     const res = await api.enhanceTask(id);
     set((state) => ({
       tasks: state.tasks.map((t) =>
-        t.id === id ? { ...t, enhancedDescription: res.enhancedDescription } : t
+        t.id === id
+          ? { ...t, enhancedDescription: JSON.stringify(res, null, 2) }
+          : t
       ),
     }));
   },

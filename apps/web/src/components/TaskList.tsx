@@ -172,54 +172,10 @@ export default function TaskList() {
                       </span>
                     )}
                   </div>
-                  <DescriptionTask description={task.enhancedDescription} />
-                  {/* {task.enhancedDescription &&
-                    (() => {
-                      let parsed: EnhancedDescription | null = null;
-                      try {
-                        parsed = JSON.parse(task.enhancedDescription);
-                      } catch (e) {
-                        console.error("Failed to parse enhancedDescription", e);
-                      }
-
-                      if (!parsed)
-                        return (
-                          <pre className="text-sm text-gray-700 mt-1 p-2 bg-gray-50 rounded break-words whitespace-pre-wrap">
-                            {task.enhancedDescription}
-                          </pre>
-                        );
-
-                      return (
-                        <div className="p-2 mt-2 bg-gray-50 rounded">
-                          <strong>Summary:</strong> {parsed.summary}
-                          <div>
-                            <strong>Steps:</strong>
-                            <ol className="list-decimal ml-5">
-                              {parsed.steps.map((step, i) => (
-                                <li key={i}>{step}</li>
-                              ))}
-                            </ol>
-                          </div>
-                          <div>
-                            <strong>Risks:</strong>
-                            <ul className="list-disc ml-5">
-                              {parsed.risks.map((risk, i) => (
-                                <li key={i}>{risk}</li>
-                              ))}
-                            </ul>
-                          </div>
-                          <div>
-                            <strong>Estimate Hours:</strong>{" "}
-                            {parsed.estimateHours}
-                          </div>
-                          {parsed.tags && parsed.tags.length > 0 && (
-                            <div>
-                              <strong>Tags:</strong> {parsed.tags.join(", ")}
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })()} */}
+                  <DescriptionTask
+                    description={task.enhancedDescription}
+                    key={task.id + (task.enhancedDescription ?? "")}
+                  />
                   <div className="flex gap-2 mt-2 flex-wrap items-start">
                     <button
                       onClick={() => startEdit(task)}
