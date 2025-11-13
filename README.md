@@ -1,4 +1,4 @@
-# 💱 Todo fullstack
+# Todo fullstack
 
 A full-stack To-Do application with AI-enhanced task descriptions. Users can create tasks, and an LLM generates structured guidance including summary, steps, risks, estimated hours, and suggested tags. Built with React, Cloudflare Workers, and D1 (SQLite).
 
