@@ -147,5 +147,3 @@ CREATE TABLE tasks (
   updatedAt DATETIME NOT NULL
 );
 ```
-
-### 11.
