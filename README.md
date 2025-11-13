@@ -43,8 +43,10 @@ or
 pnpm db:migrate:remote
 ```
 
+```
 • FE runs on http://localhost:5173
 • API runs on http://localhost:8787
+```
 
 ### 3. Testing
 
@@ -60,21 +62,25 @@ pnpm dev
 
 ### 5. Assumptions & Notes
 
+```
 • Anonymous session; no full auth.
 • enhancedDescription is always stored as JSON string; frontend parses it.
 • LLM image generation is optional; currently uses placeholder images.
 • Rate-limiting and error handling for LLM calls included.
 
+```
+
 ### 6. API endpoints
 
 ```
-Method Endpoint Description
-POST /api/tasks Create a new task
-GET /api/tasks List tasks with optional filters: ?status=&priority=&q=
-GET /api/tasks/:id Fetch single task
-PATCH /api/tasks/:id Update task partially
-DELETE /api/tasks/:id Delete task
-POST /api/tasks/:id/enhance Call LLM to generate/refresh enhancedDescription
+Method               Endpoint                   Description
+POST            /api/tasks                  Create a new task
+GET             /api/tasks                  List tasks with optional filters: ?status=&priority=&q=
+GET             /api/tasks/:id              Fetch single task
+PATCH           /api/tasks/:id              Update task partially
+DELETE          /api/tasks/:id              Delete task
+POST            /api/tasks/:id/enhance      Call LLM to generate/refresh enhancedDescription
+
 ```
 
 ### 7. Architecture Overview
