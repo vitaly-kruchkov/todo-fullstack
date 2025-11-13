@@ -18,6 +18,7 @@ export default defineConfig({
     alias: {
       "@helpers": path.resolve(__dirname, "../../packages/types"),
       "@utils": path.resolve(__dirname, "../../packages/utils"),
+      "@ui": path.resolve(__dirname, "../../packages/ui"),
     },
   },
 });

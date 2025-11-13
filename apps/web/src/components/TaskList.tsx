@@ -1,13 +1,8 @@
 import { useState } from "react";
 import { useTaskStore } from "../store";
-import type {
-  EnhancedDescription,
-  PriorityFilter,
-  Task,
-  TaskRow,
-} from "@helpers/types";
+import type { PriorityFilter, Task, TaskRow } from "@helpers/types";
 import { TaskImage } from "./TaskImage";
-
+import { DescriptionTask } from "@ui/DescriptionTask";
 export default function TaskList() {
   const {
     tasks,
@@ -177,7 +172,8 @@ export default function TaskList() {
                       </span>
                     )}
                   </div>
-                  {task.enhancedDescription &&
+                  <DescriptionTask description={task.enhancedDescription} />
+                  {/* {task.enhancedDescription &&
                     (() => {
                       let parsed: EnhancedDescription | null = null;
                       try {
@@ -223,7 +219,7 @@ export default function TaskList() {
                           )}
                         </div>
                       );
-                    })()}
+                    })()} */}
                   <div className="flex gap-2 mt-2 flex-wrap items-start">
                     <button
                       onClick={() => startEdit(task)}

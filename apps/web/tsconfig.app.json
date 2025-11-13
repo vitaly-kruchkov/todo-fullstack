@@ -26,7 +26,8 @@
     "baseUrl": ".",
     "paths": {
       "@helpers/*": ["../../packages/types/*"],
-      "@utils/*": ["../../packages/utils/*"]
+      "@utils/*": ["../../packages/utils/*"],
+      "@ui/*": ["../../packages/ui/*"]
     }
   },
   "include": ["src"]
