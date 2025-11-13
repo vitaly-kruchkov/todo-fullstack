@@ -118,8 +118,8 @@ app.delete("/api/tasks/:id", async (c) => {
 
 app.post("/api/tasks/:id/enhance", async (c) => {
   const db = c.env.DB;
-
   const id = Number(c.req.param("id"));
+
   if (isNaN(id)) return c.json({ error: "Invalid ID" }, 400);
 
   const task = await db
@@ -128,45 +128,116 @@ app.post("/api/tasks/:id/enhance", async (c) => {
     .first<TaskRow>();
 
   if (!task) return c.json({ error: "Task not found" }, 404);
+
   try {
-    // const openai = new OpenAI({
-    //   apiKey: c.env.OPENAI_API_KEY,
-    // });
+    const allTasksResult = await db
+      .prepare("SELECT title, notes FROM tasks WHERE id != ?")
+      .bind(id)
+      .all<TaskRow>();
+    const allTasks = allTasksResult.results;
 
-    //     const prompt = `
-    // System: You are an assistant helping users elaborate tasks into actionable checklists.
-    // User: Title: "${task.title}"
-    // Notes: "${task.notes ?? ""}"
-    // Please return JSON with keys: summary, steps, risks, estimateHours.
-    // `;
+    const isDuplicate = allTasks.some(
+      (t) => t.title === task.title && t.notes === task.notes
+    );
 
-    //     const completion = await openai.chat.completions.create({
-    //       model: "gpt-3.5-turbo",
-    //       messages: [{ role: "user", content: prompt }],
-    //     });
+    if (isDuplicate) {
+      return c.json({ error: "Duplicate task detected" }, 409);
+    }
 
-    // const enhancedDescription = completion.choices[0].message?.content ?? "";
+    const openai = new OpenAI({
+      apiKey: c.env.OPENAI_API_KEY,
+    });
 
-    const enhancedDescription = `
-Summary: Mock summary
-Steps:
-1. Step 1
-2. Step 2
-Risks: None
-Estimate hours: 1
+    const prompt = `
+System: You are an assistant helping users elaborate tasks into actionable checklists.
+User: Title: "${task.title}"
+Notes: "${task.notes ?? ""}"
+Please return JSON with the following keys:
+- summary (string)
+- steps (array of strings)
+- risks (array of strings)
+- estimateHours (number)
+- tags (array of strings)
 `;
+
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    let responseText = completion.choices[0].message?.content ?? "";
+
+    const cleanedText = responseText
+      .replace(/```json/i, "")
+      .replace(/```/g, "")
+      .trim();
+
+    let enhancedData: {
+      summary?: string;
+      steps?: string[];
+      risks?: string[];
+      estimateHours?: number;
+      tags?: string[];
+    } = {};
+
+    try {
+      enhancedData = JSON.parse(cleanedText);
+    } catch (err) {
+      console.warn("Failed to parse AI response, using raw text");
+      enhancedData.summary = cleanedText;
+    }
 
     await db
       .prepare(
         "UPDATE tasks SET enhancedDescription = ?, updatedAt = ? WHERE id = ?"
       )
-      .bind(enhancedDescription, new Date().toISOString(), id)
+      .bind(JSON.stringify(enhancedData), new Date().toISOString(), id)
       .run();
 
-    return c.json({ enhancedDescription });
+    return c.json(enhancedData);
   } catch (err: unknown) {
     console.error("OpenAI enhance error:", err);
     return c.json({ error: "OpenAI quota exceeded, try later" }, 429);
+  }
+});
+
+app.post("/api/tasks/:id/image", async (c) => {
+  const id = Number(c.req.param("id"));
+  const db = c.env.DB;
+
+  if (isNaN(id)) return c.json({ error: "Invalid ID" }, 400);
+
+  const task = await db
+    .prepare("SELECT * FROM tasks WHERE id = ?")
+    .bind(id)
+    .first<TaskRow>();
+  if (!task) return c.json({ error: "Task not found" }, 404);
+
+  try {
+    // const openai = new OpenAI({ apiKey: c.env.OPENAI_API_KEY });
+
+    // const result = await openai.images.generate({
+    //   model: "gpt-image-1",
+    //   prompt: `Create a minimal illustrative icon for a task titled "${task.title}"`,
+    //   size: "1024x1024",
+    // });
+
+    // const imageUrl = result.data?.[0]?.url ?? null;
+    // if (!imageUrl)
+    //   return c.json({ error: "Failed to generate image URL" }, 500);
+
+    const random = Math.floor(Math.random() * 1000);
+    const imageUrl = `https://picsum.photos/seed/${id}-${random}/512/512`;
+
+    await db
+      .prepare("UPDATE tasks SET imageUrl = ?, updatedAt = ? WHERE id = ?")
+      .bind(imageUrl, new Date().toISOString(), id)
+      .run();
+
+    return c.json({ imageUrl });
+  } catch (err) {
+    console.error(err);
+    return c.json({ error: "Image generation failed" }, 500);
   }
 });
 

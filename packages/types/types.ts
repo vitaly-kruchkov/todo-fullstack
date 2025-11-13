@@ -6,11 +6,19 @@ export interface Env {
   [key: string]: unknown;
 }
 
+export type EnhancedDescription = {
+  summary: string;
+  steps: string[];
+  risks: string[];
+  estimateHours: number;
+  tags?: string[];
+};
+
 export type TaskRow = {
   id: number;
   title: string;
   notes?: string;
-  enhancedDescription?: string;
+  enhancedDescription?: EnhancedDescription;
   status: "open" | "done";
   priority?: number;
   dueDate?: string;
@@ -40,6 +48,7 @@ export type Task = z.infer<typeof TaskSchema> & {
   status: "open" | "done";
   createdAt: string;
   updatedAt: string;
+  imageUrl?: string;
 };
 
 export type PriorityFilter = 1 | 2 | 3 | "";

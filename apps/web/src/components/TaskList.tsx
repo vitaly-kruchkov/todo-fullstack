@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { useTaskStore } from "../store";
-import type { PriorityFilter, Task, TaskRow } from "@helpers/types";
+import type {
+  EnhancedDescription,
+  PriorityFilter,
+  Task,
+  TaskRow,
+} from "@helpers/types";
+import { TaskImage } from "./TaskImage";
 
 export default function TaskList() {
   const {
@@ -171,12 +177,54 @@ export default function TaskList() {
                       </span>
                     )}
                   </div>
-                  {task.enhancedDescription && (
-                    <pre className="text-sm text-gray-700 mt-1 p-2 bg-gray-50 rounded">
-                      {task.enhancedDescription}
-                    </pre>
-                  )}
-                  <div className="flex gap-2 mt-2 flex-wrap">
+                  {task.enhancedDescription &&
+                    (() => {
+                      let parsed: EnhancedDescription | null = null;
+                      try {
+                        parsed = JSON.parse(task.enhancedDescription);
+                      } catch (e) {
+                        console.error("Failed to parse enhancedDescription", e);
+                      }
+
+                      if (!parsed)
+                        return (
+                          <pre className="text-sm text-gray-700 mt-1 p-2 bg-gray-50 rounded break-words whitespace-pre-wrap">
+                            {task.enhancedDescription}
+                          </pre>
+                        );
+
+                      return (
+                        <div className="p-2 mt-2 bg-gray-50 rounded">
+                          <strong>Summary:</strong> {parsed.summary}
+                          <div>
+                            <strong>Steps:</strong>
+                            <ol className="list-decimal ml-5">
+                              {parsed.steps.map((step, i) => (
+                                <li key={i}>{step}</li>
+                              ))}
+                            </ol>
+                          </div>
+                          <div>
+                            <strong>Risks:</strong>
+                            <ul className="list-disc ml-5">
+                              {parsed.risks.map((risk, i) => (
+                                <li key={i}>{risk}</li>
+                              ))}
+                            </ul>
+                          </div>
+                          <div>
+                            <strong>Estimate Hours:</strong>{" "}
+                            {parsed.estimateHours}
+                          </div>
+                          {parsed.tags && parsed.tags.length > 0 && (
+                            <div>
+                              <strong>Tags:</strong> {parsed.tags.join(", ")}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
+                  <div className="flex gap-2 mt-2 flex-wrap items-start">
                     <button
                       onClick={() => startEdit(task)}
                       className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition-colors">
@@ -187,6 +235,7 @@ export default function TaskList() {
                       className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition-colors">
                       Enhance AI
                     </button>
+                    <TaskImage taskId={task.id} initialImage={task.imageUrl} />
                     <button
                       onClick={() => deleteTask(task.id)}
                       className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition-colors">
