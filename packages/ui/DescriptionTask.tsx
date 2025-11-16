@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 
 export function DescriptionTask({ description }: { description?: string }) {
   const parsed = useMemo(() => {
@@ -15,7 +15,7 @@ export function DescriptionTask({ description }: { description?: string }) {
 
   if (!parsed) {
     return (
-      <pre className="text-sm text-gray-700 mt-1 p-2 bg-gray-50 rounded break-words whitespace-pre-wrap">
+      <pre className="text-sm text-gray-700 mt-1 p-2 bg-gray-50 rounded wrap-break-word whitespace-pre-wrap">
         {description}
       </pre>
     );
